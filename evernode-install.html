@@ -1,5 +1,4 @@
-﻿<!DOCTYPE html>
-
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -34,6 +33,7 @@
 <p>Follow these steps to install Evernode Beta V3 on your system:</p>
 <p><strong>Before you begin the installation you must have at minimum the following</strong></p>
 <ul>
+<li>This page <strong>open</strong> <a href="https://docs.evernode.org/en/latest/hosts/evernode-host.html">https://docs.evernode.org/en/latest/hosts/evernode-host.html</a></li>
 <li>a <strong>server/computer</strong> that meets the minimum requirements</li>
 <li><strong>Ubuntu 20.04</strong> installed - a minimal install is sufficient</li>
 <li>a <strong>domain name</strong> for your host - served on a fixed IP address</li>
@@ -44,7 +44,7 @@
 <h2 id="ensure-port-80-is-open-and-enabled-at-the-firewall">1. Ensure port 80 is open and enabled at the firewall</h2>
 <p>If you don’t have the firewall enabled there are great instructions here. Port 80 is only needed for the duration of the Let’s Encrypt certificate issuance. Evernode does not need it after the certificate has been issued.</p>
 <p><a href="https://www.digitalocean.com/community/tutorials/how-to-set-up-a-firewall-with-ufw-on-ubuntu-20-04">https://www.digitalocean.com/community/tutorials/how-to-set-up-a-firewall-with-ufw-on-ubuntu-20-04</a></p>
-<pre class=" language-bash"><code class="prism  language-bash"><span class="token function">sudo</span> apt update <span class="token operator">&&</span> <span class="token function">sudo</span> apt upgrade -y
+<pre class=" language-bash"><code class="prism  language-bash"><span class="token function">sudo</span> apt update <span class="token operator">&amp;&amp;</span> <span class="token function">sudo</span> apt upgrade -y
 </code></pre>
 <p>enable port 80</p>
 <pre class=" language-bash"><code class="prism  language-bash"><span class="token function">sudo</span> ufw allow 80/tcp
@@ -65,9 +65,9 @@ make sure to reload the firewall</p>
 <p>It needs to return <img src="https://www.yougetsignal.com/img/flag_green.gif" alt="Open"> Port [80] is open on [IP ADDDRESS}</p>
 <h2 id="test-lets-encrypt-preparedness">2. Test Let’s Encrypt preparedness</h2>
 <p>In this next step we will check to see if Let’s Encrypt is able to be setup properly in a dummy run. The Let’s Encrypt setup comes late in the Evernode install process and you will have to start all over again if it fails. It is best to understand issuing the SSL certificate will work before we start.</p>
-<pre class=" language-bash"><code class="prism  language-bash"><span class="token function">sudo</span> certbot certonly -d <span class="token operator"><</span>DOMAIN-NAME<span class="token operator">></span> --dry-run -v
+<pre class=" language-bash"><code class="prism  language-bash"><span class="token function">sudo</span> certbot certonly -d <span class="token operator">&lt;</span>DOMAIN-NAME<span class="token operator">&gt;</span> --dry-run -v
 </code></pre>
-<p>Replace <DOMAIN NAME> with your DOMAIN NAME.</p>
+<p>Replace &lt;DOMAIN NAME&gt; with your DOMAIN NAME.</p>
 <pre class=" language-bash"><code class="prism  language-bash">e.g. <span class="token function">sudo</span> certbot certonly -d elephant.rippleitin.nz --dry-run -v
 </code></pre>
 <p>If it is successful then you will receive a response</p>
