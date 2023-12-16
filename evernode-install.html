@@ -1,0 +1,198 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Evernode</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__left">
+    <div class="stackedit__toc">
+      
+<ul>
+<li><a href="#installing-evernode-beta-v3-host">Installing Evernode Beta V3 Host</a>
+<ul>
+<li><a href="#ensure-port-80-is-open-and-enabled-at-the-firewall">1. Ensure port 80 is open and enabled at the firewall</a></li>
+<li><a href="#test-letsencrypt-preparedness">2. Test letsencrypt preparedness</a></li>
+<li><a href="#generate-a-testnet-account-and-get-free-test-evrs">3. Generate a testnet account and get free test EVRS</a></li>
+<li><a href="#enable-curl-in-ubuntu-20.04">3. Enable ‘curl’ in Ubuntu 20.04</a></li>
+<li><a href="#evernode-settings">4. Evernode Settings</a></li>
+<li><a href="#start-evernode-installation">5. Start Evernode Installation</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+  </div>
+  <div class="stackedit__right">
+    <div class="stackedit__html">
+      <h1 id="installing-evernode-beta-v3-host"><em>Installing Evernode Beta V3 Host</em></h1>
+<p>Follow these steps to install Evernode Beta V3 on your system:</p>
+<p><strong>Before you begin the installation you must have at minimum the following</strong></p>
+<ul>
+<li>a <strong>server/computer</strong> that meets the minimum requirements</li>
+<li><strong>Ubuntu 20.04</strong> installed</li>
+<li>a <strong>domain name</strong> for your host</li>
+<li>an <strong>email address</strong> that is reachable. This email address will be made public on your host page in the public dashboard</li>
+</ul>
+<p>For Evernode to function you will need to have access to SSL, it is presumed that most host installations will use letsencrypt which is automated through the install process. This document will use letsencrypt.</p>
+<h2 id="ensure-port-80-is-open-and-enabled-at-the-firewall">1. Ensure port 80 is open and enabled at the firewall</h2>
+<p>If you don’t have the firewall enabled there are great instructions here</p>
+<p><a href="https://www.digitalocean.com/community/tutorials/how-to-set-up-a-firewall-with-ufw-on-ubuntu-20-04">https://www.digitalocean.com/community/tutorials/how-to-set-up-a-firewall-with-ufw-on-ubuntu-20-04</a></p>
+<pre class=" language-bash"><code class="prism  language-bash"><span class="token function">sudo</span> apt update <span class="token operator">&amp;&amp;</span> <span class="token function">sudo</span> apt upgrade -y
+</code></pre>
+<p>enable port 80</p>
+<pre class=" language-bash"><code class="prism  language-bash"><span class="token function">sudo</span> ufw allow 80/tcp
+</code></pre>
+<p>let’s check</p>
+<pre class=" language-bash"><code class="prism  language-bash"><span class="token function">sudo</span> ufw status
+
+80/tcp ALLOW Anywhere
+80/tcp <span class="token punctuation">(</span>v6<span class="token punctuation">)</span> ALLOW Anywhere <span class="token punctuation">(</span>v6<span class="token punctuation">)</span>
+</code></pre>
+<p>ensure both are present<br>
+make sure to reload the firewall</p>
+<pre class=" language-bash"><code class="prism  language-bash"><span class="token function">sudo</span> ufw reload
+</code></pre>
+<h2 id="test-letsencrypt-preparedness">2. Test letsencrypt preparedness</h2>
+<p>In this next step we will check to see if letsencrypt is able to be setup properly in a dummy run. The letsencrypt setup comes late in the Evernode install process and you will have to start all over again if it fails. It is best to understand if it will work before we start.</p>
+<pre class=" language-bash"><code class="prism  language-bash"><span class="token function">sudo</span> certbot certonly -d <span class="token operator">&lt;</span>DOMAIN-NAME<span class="token operator">&gt;</span> --dry-run -v
+</code></pre>
+<p>Replace &lt;DOMAIN NAME&gt; with your DOMAIN NAME.</p>
+<pre class=" language-bash"><code class="prism  language-bash">e.g. <span class="token function">sudo</span> certbot certonly -d elephant.rippleitin.nz --dry-run -v
+</code></pre>
+<p>If it is successful then you will receive a response</p>
+<pre><code>The dry run was successful
+</code></pre>
+<p>If there is an error, refer to the log and ensure you fix any problems before you go any further.</p>
+<h2 id="generate-a-testnet-account-and-get-free-test-evrs">3. Generate a testnet account and get free test EVRS</h2>
+<p>Go to this link <a href="https://dashboard.evernode.org/#/testnet-faucet">https://dashboard.evernode.org/#/testnet-faucet</a> and click on the <strong>Generate an account</strong> button.</p>
+<p>You will be given an XRPL r address, its secret, and 10000 free test XRP and 6000 test EVRS. Neither of these currencies can be used on the main-net and are both worthless.</p>
+<p>Copy both of these addresses using the copy icon at the end of the address and keep them safe and handy, we need both for installation shortly.</p>
+<p>As an example, I created an account for this guideline.</p>
+<pre><code>Address rLvYwu5qsHRYAYCbJxtpfEoD4GHG651HBa
+Secret ssNBKUGVZ2582GiyAJNcVLj6yTQZE
+
+XRP 9999.999948
+EVR 6000
+</code></pre>
+<h2 id="enable-curl-in-ubuntu-20.04">3. Enable ‘curl’ in Ubuntu 20.04</h2>
+<pre class=" language-bash"><code class="prism  language-bash"><span class="token function">sudo</span> apt update
+<span class="token function">sudo</span> apt <span class="token function">install</span> curl
+</code></pre>
+<p>So far we have</p>
+<ul>
+<li>installed Ubuntu 20.04</li>
+<li>opened Port 80</li>
+<li>ensured our domain name works</li>
+<li>tested letsencrypt</li>
+<li>generated a test account with some EVRS tokens that we need to set up the host</li>
+<li>enabled ‘curl’ on our server.</li>
+</ul>
+<h3 id="that-is-the-end-of-the-preparation"><strong>That is the end of the preparation</strong></h3>
+<h2 id="evernode-settings">4. Evernode Settings</h2>
+<p>4.1 <strong>Download Setup Script:</strong><br>
+Run the following command to download the setup script:</p>
+<pre class=" language-bash"><code class="prism  language-bash">curl -fsSL https://stevernode.blob.core.windows.net/evernode-beta-v3/setup.sh <span class="token operator">|</span> <span class="token function">sudo</span> <span class="token function">bash</span> -s <span class="token function">install</span>
+</code></pre>
+<p>4.2 <strong>Agree to License:</strong><br>
+Accept the license agreement by typing <strong>y</strong> and pressing ‘Enter’.<br>
+Once completed you will see a:</p>
+<p>‘Downloading setup support files…’</p>
+<p>4.3 <strong>Agree to Network:</strong></p>
+<pre><code>Do you want to connect to the default rippled server (wss://hooks-testnet-v3.xrpl-labs.com)? [Y/n] y
+</code></pre>
+<pre><code>Checking server wss://hooks-testnet-v3.xrpl-labs.com...
+Using Rippled server 'wss://hooks-testnet-v3.xrpl-labs.com'.
+</code></pre>
+<p>4.3 <strong>Provide Account Information:</strong></p>
+<pre><code>In order to register in Evernode you need to have an XRPL account with a sufficient Ever (EVR) balance.
+
+Specify the XRPL account address: rUFLyuYeCpjXChwJHvyiHxuHFw8pgjrA6S (Use the address you generated)
+
+Checking account rUFLyuYeCpjXChwJHvyiHxuHFw8pgjrA6S...
+</code></pre>
+<pre><code>- Specify the XRPL account secret. shzZ37jBxNLYBFs48izDzRz1Z3Cwz (Use the secret you generated)
+</code></pre>
+<ul>
+<li>
+<p>Input the contact email address for your host.</p>
+</li>
+<li>
+<p>Specify the domain name reachable by your host.</p>
+</li>
+<li>
+<p>Confirm Let’s Encrypt automatic SSL.</p>
+</li>
+<li>
+<p>If you are unsure if your host supports IPv6 select N at the IPv6 question.</p>
+</li>
+</ul>
+<p>In the following sequence you will be offered a default setup based on your servers hardware. If you are happy with it then select Y. If you want to change any parameters select No.</p>
+<p>An example of the default settings that were offered</p>
+<pre><code>Based on your system resources, we have chosen the following allocation:
+6.41 GB memory
+1.67 GB Swap
+132.96 GB disk space
+Distributed among 12 contract instances
+Is this the allocation you want to use? [Y/n] n (I chose 'n')
+</code></pre>
+<pre><code>Confirm your settings for memory, swap, disk space, etc.
+</code></pre>
+<p>As an example of settings I selected the following:</p>
+<pre><code>Specify the number of contract instances that you wish to host: 6
+
+Specify the total memory in megabytes to distribute among all contract instances: 6000
+
+Specify the total Swap in megabytes to distribute among all contract instances: 1600
+
+Specify the total disk space in megabytes to distribute among all contract instances: 120000
+
+Using allocation 6.00 GB memory, 1.60 GB Swap, 120.00 GB disk space, distributed among 6 contract instances.
+</code></pre>
+<p>The default ports should be ok as they are. You need to set one port per instance on the two ranges - we will set them in the firewall later.</p>
+<pre><code>Selected default port ranges (Peer: 22861-22867, User: 26201-26207). This needs to be publicly reachable over internet.
+
+Are these the ports you want to use? [Y/n] y 
+
+Using peer port range 22861-22867 and user port range 26201-26207)
+</code></pre>
+<p>In the following it asks about the charge per contract. On the testnet most have set it at 2, set it as you please.</p>
+<pre><code>Specify the lease amount in EVRs for your contract instances (per moment charge per contract): 2
+</code></pre>
+<p>Lease amount set as 2 EVRs per Moment.</p>
+<h2 id="start-evernode-installation">5. Start Evernode Installation</h2>
+<p>Setup will now begin the installation. Continue? [Y/n] <strong>y</strong></p>
+<p>Proceed with the installation by typing <strong>y</strong> and pressing ‘Enter’.</p>
+<p>4.5 <strong>Set Firewall and Reboot System</strong></p>
+<pre><code>Once the installation completes, and before we reboot the system, we need to open up the ports for our instances.
+```bash
+sudo ufw allow 22861:22867/TCP
+sudo ufw allow 26201-26207/TCP
+</code></pre>
+<p>reload the firewall</p>
+<pre class=" language-bash"><code class="prism  language-bash"><span class="token function">sudo</span> ufw reload
+</code></pre>
+<p>make sure your firewall starts and operates when you reboot</p>
+<pre class=" language-bash"><code class="prism  language-bash"><span class="token function">sudo</span> ufw <span class="token function">enable</span>
+</code></pre>
+<pre class=" language-bash"><code class="prism  language-bash"><span class="token function">sudo</span> <span class="token function">reboot</span>
+</code></pre>
+<p>4.6 <strong>Check System Status</strong></p>
+<pre class=" language-bash"><code class="prism  language-bash"><span class="token function">sudo</span> evernode status
+</code></pre>
+<p>4.7 <strong>Verify Installation</strong></p>
+<p>To confirm that Evernode Beta V3 is installed, running and viewable from the outside world…</p>
+<p>Go to <a href="https://dashboard.evernode.org/">https://dashboard.evernode.org/</a><br>
+In the left pane click <strong>My Host</strong><br>
+In the box that pops up, paste the <strong>r address</strong> of your account here. Once it loads you will see a green light beside its address to show it is online or an orange light if it is offline.</p>
+<h3 id="if-youve-reached-this-far-your-system-is-now-registered-on-evernode-beta-v3">6. If you’ve reached this far your system is now registered on Evernode Beta V3!</h3>
+
+    </div>
+  </div>
+</body>
+
+</html>
